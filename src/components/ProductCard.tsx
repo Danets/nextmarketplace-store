@@ -3,21 +3,24 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/types';
-import { useCart } from '@/lib/hooks/useCart';
+import { useCartContext } from './CartProvider';
+import { RatingDisplay, PriceDisplay } from '@/components/ui';
 
+/**
+ * ProductCard - Single Responsibility: Display product information in card format
+ * Open/Closed: Can be extended with additional display options
+ */
 interface ProductCardProps {
     product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-    const { addToCart } = useCart();
+    const { addToCart } = useCartContext();
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         addToCart(product, 1);
     };
-
-    const discountPercentage = product.discount || 0;
 
     return (
         <Link href={`/products/${product.id}`}>
@@ -38,9 +41,9 @@ export function ProductCard({ product }: ProductCardProps) {
                             transform: scale(1.1);
                         }
                     `}</style>
-                    {discountPercentage > 0 && (
+                    {product.discount && product.discount > 0 && (
                         <div className="absolute top-3 right-3 rounded-full bg-red-500 px-3 py-1 text-sm font-bold text-white">
-                            -{discountPercentage}%
+                            -{product.discount}%
                         </div>
                     )}
                 </div>
@@ -58,33 +61,15 @@ export function ProductCard({ product }: ProductCardProps) {
                     </h3>
 
                     {/* Rating */}
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1">
-                            {[...Array(5)].map((_, i) => (
-                                <span
-                                    key={i}
-                                    className={`text-xs ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
-                                >
-                                    ★
-                                </span>
-                            ))}
-                        </div>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                            ({product.reviews})
-                        </span>
-                    </div>
+                    <RatingDisplay rating={product.rating} reviews={product.reviews} size="sm" />
 
                     {/* Price */}
-                    <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-gray-900 dark:text-white">
-                            ${product.price.toFixed(2)}
-                        </span>
-                        {product.originalPrice && (
-                            <span className="text-sm text-gray-500 line-through dark:text-gray-400">
-                                ${product.originalPrice.toFixed(2)}
-                            </span>
-                        )}
-                    </div>
+                    <PriceDisplay
+                        price={product.price}
+                        originalPrice={product.originalPrice}
+                        discount={product.discount}
+                        size="md"
+                    />
 
                     {/* Stock Status */}
                     <div className="text-xs font-medium">
@@ -99,9 +84,9 @@ export function ProductCard({ product }: ProductCardProps) {
                     <button
                         onClick={handleAddToCart}
                         disabled={!product.inStock}
-                        className="mt-auto rounded-lg bg-blue-600 py-2 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:bg-gray-400 dark:bg-blue-700 dark:hover:bg-blue-600"
+                        className="mt-2 rounded-lg bg-blue-600 py-2 px-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:bg-gray-400 dark:bg-blue-700 dark:hover:bg-blue-600"
                     >
-                        {product.inStock ? 'Add to Cart' : 'Unavailable'}
+                        {product.inStock ? 'Add to Cart' : 'Out of Stock'}
                     </button>
                 </div>
             </div>

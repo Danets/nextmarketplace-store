@@ -92,9 +92,9 @@ export const products: Product[] = [
     price: 129.99,
     originalPrice: 179.99,
     image:
-      "https://images.unsplash.com/photo-1587829191301-11db59a44f6b?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1587595298235-64d482b147ad?w=500&h=500&fit=crop",
     images: [
-      "https://images.unsplash.com/photo-1587829191301-11db59a44f6b?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1587595298235-64d482b147ad?w=500&h=500&fit=crop",
     ],
     category: "Electronics",
     categoryId: "1",
@@ -170,9 +170,9 @@ export const products: Product[] = [
     price: 59.99,
     originalPrice: 89.99,
     image:
-      "https://images.unsplash.com/photo-1565636192335-14c46fa1120d?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1565182999555-57568a89a4b8?w=500&h=500&fit=crop",
     images: [
-      "https://images.unsplash.com/photo-1565636192335-14c46fa1120d?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1565182999555-57568a89a4b8?w=500&h=500&fit=crop",
     ],
     category: "Home & Garden",
     categoryId: "3",

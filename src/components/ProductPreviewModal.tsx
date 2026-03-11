@@ -3,8 +3,13 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Product } from '@/types';
-import { useCart } from '@/lib/hooks/useCart';
+import { useCartContext } from './CartProvider';
+import { RatingDisplay, PriceDisplay, QuantitySelector } from '@/components/ui';
 
+/**
+ * ProductPreviewModal - Single Responsibility: Display product details in modal
+ * Open/Closed: Can be extended with additional product information
+ */
 interface ProductPreviewModalProps {
     product: Product;
     isOpen: boolean;
@@ -12,7 +17,7 @@ interface ProductPreviewModalProps {
 }
 
 export function ProductPreviewModal({ product, isOpen, onClose }: ProductPreviewModalProps) {
-    const { addToCart } = useCart();
+    const { addToCart } = useCartContext();
     const [quantity, setQuantity] = useState(1);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -23,13 +28,12 @@ export function ProductPreviewModal({ product, isOpen, onClose }: ProductPreview
 
     const handleAddToCart = () => {
         addToCart(product, quantity);
+        setQuantity(1);
         onClose();
     };
 
-    const handleQuantityChange = (value: number) => {
-        if (value > 0) {
-            setQuantity(value);
-        }
+    const handleQuantityChange = (newQuantity: number) => {
+        setQuantity(newQuantity);
     };
 
     return (
@@ -60,7 +64,7 @@ export function ProductPreviewModal({ product, isOpen, onClose }: ProductPreview
                                 fill
                                 className="object-cover"
                             />
-                            {product.discount && (
+                            {product.discount && product.discount > 0 && (
                                 <div className="absolute top-3 right-3 rounded-full bg-red-500 px-3 py-1 text-sm font-bold text-white">
                                     -{product.discount}%
                                 </div>
@@ -69,20 +73,12 @@ export function ProductPreviewModal({ product, isOpen, onClose }: ProductPreview
 
                         {/* Thumbnail Images */}
                         {images.length > 1 && (
-                            <div className="flex gap-2">
-                                {images.map((img, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => setCurrentImageIndex(index)}
-                                        className={`h-16 w-16 overflow-hidden rounded-lg border-2 transition-colors ${index === currentImageIndex
-                                            ? 'border-blue-600'
-                                            : 'border-gray-200 dark:border-gray-700'
-                                            }`}
-                                    >
-                                        <Image src={img} alt={`${product.name} ${index + 1}`} width={64} height={64} className="h-full w-full object-cover" />
-                                    </button>
-                                ))}
-                            </div>
+                            <ImageThumbnails
+                                images={images}
+                                currentIndex={currentImageIndex}
+                                onSelect={setCurrentImageIndex}
+                                productName={product.name}
+                            />
                         )}
                     </div>
 
@@ -97,50 +93,22 @@ export function ProductPreviewModal({ product, isOpen, onClose }: ProductPreview
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{product.name}</h1>
 
                         {/* Rating */}
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1">
-                                {[...Array(5)].map((_, i) => (
-                                    <span
-                                        key={i}
-                                        className={`text-lg ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
-                                    >
-                                        ★
-                                    </span>
-                                ))}
-                            </div>
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                ({product.reviews} reviews)
-                            </span>
-                        </div>
+                        <RatingDisplay rating={product.rating} reviews={product.reviews} />
 
                         {/* Price */}
-                        <div className="flex items-center gap-3">
-                            <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                                ${product.price.toFixed(2)}
-                            </span>
-                            {product.originalPrice && (
-                                <span className="text-lg text-gray-500 line-through dark:text-gray-400">
-                                    ${product.originalPrice.toFixed(2)}
-                                </span>
-                            )}
-                        </div>
+                        <PriceDisplay
+                            price={product.price}
+                            originalPrice={product.originalPrice}
+                            discount={product.discount}
+                            size="lg"
+                        />
 
                         {/* Description */}
                         <p className="text-gray-600 dark:text-gray-300">{product.description}</p>
 
                         {/* Features */}
                         {product.features && product.features.length > 0 && (
-                            <div>
-                                <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Features:</h3>
-                                <ul className="space-y-1">
-                                    {product.features.map((feature, index) => (
-                                        <li key={index} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                            <span className="text-blue-600">✓</span>
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            <ProductFeatures features={product.features} />
                         )}
 
                         {/* Stock Status */}
@@ -153,24 +121,10 @@ export function ProductPreviewModal({ product, isOpen, onClose }: ProductPreview
                         </div>
 
                         {/* Quantity Selector */}
-                        <div className="flex items-center gap-4">
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Quantity:</span>
-                            <div className="flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600">
-                                <button
-                                    onClick={() => handleQuantityChange(quantity - 1)}
-                                    className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
-                                >
-                                    −
-                                </button>
-                                <span className="w-8 text-center">{quantity}</span>
-                                <button
-                                    onClick={() => handleQuantityChange(quantity + 1)}
-                                    className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
-                                >
-                                    +
-                                </button>
-                            </div>
-                        </div>
+                        <QuantitySelector
+                            initialQuantity={quantity}
+                            onQuantityChange={handleQuantityChange}
+                        />
 
                         {/* Add to Cart Button */}
                         <button
@@ -183,6 +137,66 @@ export function ProductPreviewModal({ product, isOpen, onClose }: ProductPreview
                     </div>
                 </div>
             </div>
+        </div>
+    );
+}
+
+/**
+ * ImageThumbnails - Single Responsibility: Display product image thumbnails
+ * Open/Closed: Can be extended with image effects
+ */
+interface ImageThumbnailsProps {
+    images: string[];
+    currentIndex: number;
+    onSelect: (index: number) => void;
+    productName: string;
+}
+
+function ImageThumbnails({ images, currentIndex, onSelect, productName }: ImageThumbnailsProps) {
+    return (
+        <div className="flex gap-2">
+            {images.map((img, index) => (
+                <button
+                    key={index}
+                    onClick={() => onSelect(index)}
+                    className={`h-16 w-16 overflow-hidden rounded-lg border-2 transition-colors ${index === currentIndex
+                            ? 'border-blue-600'
+                            : 'border-gray-200 dark:border-gray-700'
+                        }`}
+                >
+                    <Image
+                        src={img}
+                        alt={`${productName} ${index + 1}`}
+                        width={64}
+                        height={64}
+                        className="h-full w-full object-cover"
+                    />
+                </button>
+            ))}
+        </div>
+    );
+}
+
+/**
+ * ProductFeatures - Single Responsibility: Display product features
+ * Open/Closed: Can be extended with feature icons or descriptions
+ */
+interface ProductFeaturesProps {
+    features: string[];
+}
+
+function ProductFeatures({ features }: ProductFeaturesProps) {
+    return (
+        <div>
+            <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Features:</h3>
+            <ul className="space-y-1">
+                {features.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-blue-600">✓</span>
+                        {feature}
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
