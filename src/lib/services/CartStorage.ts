@@ -6,19 +6,17 @@
 import { CartItem } from "@/types";
 
 export interface ICartStorage {
-  save(items: CartItem[]): Promise<void>;
-  load(): Promise<CartItem[]>;
-  clear(): Promise<void>;
+  save(items: CartItem[]): void;
+  load(): CartItem[];
+  clear(): void;
 }
 
 export class LocalStorageCartStorage implements ICartStorage {
-  private readonly storageKey: string;
+  constructor(
+    private readonly storageKey: string = "nextmarketplace-store-cart",
+  ) {}
 
-  constructor(storageKey: string = "nextmarketplace-store-cart") {
-    this.storageKey = storageKey;
-  }
-
-  async save(items: CartItem[]): Promise<void> {
+  save(items: CartItem[]): void {
     if (typeof window === "undefined") return;
 
     try {
@@ -28,7 +26,7 @@ export class LocalStorageCartStorage implements ICartStorage {
     }
   }
 
-  async load(): Promise<CartItem[]> {
+  load(): CartItem[] {
     if (typeof window === "undefined") return [];
 
     try {
@@ -40,7 +38,7 @@ export class LocalStorageCartStorage implements ICartStorage {
     }
   }
 
-  async clear(): Promise<void> {
+  clear(): void {
     if (typeof window === "undefined") return;
 
     try {
@@ -52,21 +50,19 @@ export class LocalStorageCartStorage implements ICartStorage {
 }
 
 export class CartStorage implements ICartStorage {
-  private implementation: ICartStorage;
+  constructor(
+    private implementation: ICartStorage = new LocalStorageCartStorage(),
+  ) {}
 
-  constructor(implementation?: ICartStorage) {
-    this.implementation = implementation || new LocalStorageCartStorage();
-  }
-
-  async save(items: CartItem[]): Promise<void> {
+  save(items: CartItem[]): void {
     return this.implementation.save(items);
   }
 
-  async load(): Promise<CartItem[]> {
+  load(): CartItem[] {
     return this.implementation.load();
   }
 
-  async clear(): Promise<void> {
+  clear(): void {
     return this.implementation.clear();
   }
 }

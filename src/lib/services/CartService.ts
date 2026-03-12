@@ -10,14 +10,17 @@ export class CartService {
   constructor(private storage: CartStorage) {}
 
   addToCart(items: CartItem[], product: Product, quantity: number): CartItem[] {
-    const existingItem = items.find((item) => item.productId === product.id);
+    const existingItemIndex = items.findIndex(
+      (item) => item.productId === product.id,
+    );
 
-    if (existingItem) {
-      return items.map((item) =>
-        item.productId === product.id
-          ? { ...item, quantity: item.quantity + quantity }
-          : item,
-      );
+    if (existingItemIndex !== -1) {
+      const updated = [...items];
+      updated[existingItemIndex] = {
+        ...updated[existingItemIndex],
+        quantity: updated[existingItemIndex].quantity + quantity,
+      };
+      return updated;
     }
 
     return [...items, { productId: product.id, quantity, product }];
@@ -56,11 +59,11 @@ export class CartService {
     return items.reduce((count, item) => count + item.quantity, 0);
   }
 
-  async saveCart(items: CartItem[]): Promise<void> {
-    await this.storage.save(items);
+  saveCart(items: CartItem[]): void {
+    this.storage.save(items);
   }
 
-  async loadCart(): Promise<CartItem[]> {
+  loadCart(): CartItem[] {
     return this.storage.load();
   }
 }

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Product } from '@/types';
 import { useCartContext } from './CartProvider';
-import { RatingDisplay, PriceDisplay, QuantitySelector } from '@/components/ui';
+import { RatingDisplay, PriceDisplay, QuantitySelector, ImageThumbnails, ProductFeatures } from '@/components/ui';
 
 /**
  * ProductPreviewModal - Single Responsibility: Display product details in modal
@@ -137,66 +137,6 @@ export function ProductPreviewModal({ product, isOpen, onClose }: ProductPreview
                     </div>
                 </div>
             </div>
-        </div>
-    );
-}
-
-/**
- * ImageThumbnails - Single Responsibility: Display product image thumbnails
- * Open/Closed: Can be extended with image effects
- */
-interface ImageThumbnailsProps {
-    images: string[];
-    currentIndex: number;
-    onSelect: (index: number) => void;
-    productName: string;
-}
-
-function ImageThumbnails({ images, currentIndex, onSelect, productName }: ImageThumbnailsProps) {
-    return (
-        <div className="flex gap-2">
-            {images.map((img, index) => (
-                <button
-                    key={index}
-                    onClick={() => onSelect(index)}
-                    className={`h-16 w-16 overflow-hidden rounded-lg border-2 transition-colors ${index === currentIndex
-                            ? 'border-blue-600'
-                            : 'border-gray-200 dark:border-gray-700'
-                        }`}
-                >
-                    <Image
-                        src={img}
-                        alt={`${productName} ${index + 1}`}
-                        width={64}
-                        height={64}
-                        className="h-full w-full object-cover"
-                    />
-                </button>
-            ))}
-        </div>
-    );
-}
-
-/**
- * ProductFeatures - Single Responsibility: Display product features
- * Open/Closed: Can be extended with feature icons or descriptions
- */
-interface ProductFeaturesProps {
-    features: string[];
-}
-
-function ProductFeatures({ features }: ProductFeaturesProps) {
-    return (
-        <div>
-            <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Features:</h3>
-            <ul className="space-y-1">
-                {features.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <span className="text-blue-600">✓</span>
-                        {feature}
-                    </li>
-                ))}
-            </ul>
         </div>
     );
 }

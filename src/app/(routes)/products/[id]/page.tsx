@@ -3,14 +3,14 @@
 import { use, useState } from 'react';
 import Link from 'next/link';
 import { getProductById, products } from '@/lib/data/products';
-import { useCart } from '@/lib/hooks/useCart';
+import { useCartContext } from '@/components/CartProvider';
 import { notFound } from 'next/navigation';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
 
     const product = getProductById(id);
-    const { addToCart } = useCart();
+    const { addToCart } = useCartContext();
     const [quantity, setQuantity] = useState(1);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isAdded, setIsAdded] = useState(false);

@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCart } from '@/lib/hooks/useCart';
+import { useCartContext } from '@/components/CartProvider';
 
 export default function CartPage() {
-    const { items, isLoading, removeFromCart, updateQuantity, getTotal, clearCart } = useCart();
+    const { items, isLoading, removeFromCart, updateQuantity, getTotal, clearCart } = useCartContext();
 
     if (isLoading) {
         return (
