@@ -1,23 +1,10 @@
-'use client';
-
-import { useState } from 'react';
 import Link from 'next/link';
 import { ProductCard } from '@/components/ProductCard';
 import { CategoryCard } from '@/components/CategoryCard';
-import { ProductPreviewModal } from '@/components/ProductPreviewModal';
 import { getFeaturedProducts, categories } from '@/lib/data/products';
-import { Product } from '@/types';
 
 export default function HomePage() {
   const featuredProducts = getFeaturedProducts();
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleProductClick = (e: React.MouseEvent, product: Product) => {
-    e.preventDefault();
-    setSelectedProduct(product);
-    setIsModalOpen(true);
-  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-black">
@@ -79,7 +66,6 @@ export default function HomePage() {
             {featuredProducts.map((product) => (
               <div
                 key={product.id}
-                onClick={(e) => handleProductClick(e, product)}
                 className="cursor-pointer"
               >
                 <ProductCard product={product} />
@@ -97,15 +83,6 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-
-      {/* Product Preview Modal */}
-      {selectedProduct && (
-        <ProductPreviewModal
-          product={selectedProduct}
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
     </div>
   );
 }

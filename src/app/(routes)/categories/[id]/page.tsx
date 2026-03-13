@@ -4,17 +4,13 @@ import { useState, use } from 'react';
 import Link from 'next/link';
 import { getCategoryById, getProductsByCategory } from '@/lib/data/products';
 import { ProductCard } from '@/components/ProductCard';
-import { ProductPreviewModal } from '@/components/ProductPreviewModal';
 import { notFound } from 'next/navigation';
-import { Product } from '@/types';
 
 export default function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
 
     const category = getCategoryById(id);
     const categoryProducts = getProductsByCategory(id);
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState('featured');
 
@@ -39,12 +35,6 @@ export default function CategoryPage({ params }: { params: Promise<{ id: string 
     } else if (sortBy === 'newest') {
         filteredProducts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
-
-    const handleProductClick = (e: React.MouseEvent, product: Product) => {
-        e.preventDefault();
-        setSelectedProduct(product);
-        setIsModalOpen(true);
-    };
 
     return (
         <div className="min-h-screen bg-white dark:bg-black">
@@ -124,7 +114,6 @@ export default function CategoryPage({ params }: { params: Promise<{ id: string 
                         {filteredProducts.map((product) => (
                             <div
                                 key={product.id}
-                                onClick={(e) => handleProductClick(e, product)}
                                 className="cursor-pointer"
                             >
                                 <ProductCard product={product} />
@@ -133,15 +122,6 @@ export default function CategoryPage({ params }: { params: Promise<{ id: string 
                     </div>
                 )}
             </main>
-
-            {/* Product Preview Modal */}
-            {selectedProduct && (
-                <ProductPreviewModal
-                    product={selectedProduct}
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                />
-            )}
         </div>
     );
 }

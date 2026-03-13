@@ -3,15 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ProductCard } from '@/components/ProductCard';
-import { ProductPreviewModal } from '@/components/ProductPreviewModal';
 import { products, categories } from '@/lib/data/products';
-import { Product } from '@/types';
 
 export default function ProductsPage() {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const filteredProducts = products.filter((product) => {
         const matchesCategory = !selectedCategory || product.categoryId === selectedCategory;
@@ -22,12 +18,6 @@ export default function ProductsPage() {
 
         return matchesCategory && matchesSearch;
     });
-
-    const handleProductClick = (e: React.MouseEvent, product: Product) => {
-        e.preventDefault();
-        setSelectedProduct(product);
-        setIsModalOpen(true);
-    };
 
     return (
         <div className="min-h-screen bg-white dark:bg-black">
@@ -111,7 +101,6 @@ export default function ProductsPage() {
                                 {filteredProducts.map((product) => (
                                     <div
                                         key={product.id}
-                                        onClick={(e) => handleProductClick(e, product)}
                                         className="cursor-pointer"
                                     >
                                         <ProductCard product={product} />
@@ -122,15 +111,6 @@ export default function ProductsPage() {
                     </div>
                 </div>
             </main>
-
-            {/* Product Preview Modal */}
-            {selectedProduct && (
-                <ProductPreviewModal
-                    product={selectedProduct}
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                />
-            )}
         </div>
     );
 }
