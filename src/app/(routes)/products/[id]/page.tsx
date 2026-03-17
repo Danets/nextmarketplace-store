@@ -27,7 +27,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const handleAddToCart = () => {
         addToCart(product, quantity);
         setIsAdded(true);
-        setTimeout(() => setIsAdded(false), 2000);
+        setTimeout(() => {
+            setIsAdded(false)
+            setQuantity(1)
+        }, 2000);
     };
 
     const handleQuantityChange = (value: number) => {

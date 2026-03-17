@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/types';
-import { useCartContext } from './CartProvider';
 import { RatingDisplay, PriceDisplay } from '@/components/ui';
 import { useState } from 'react';
 import { ProductPreviewModal } from './ProductPreviewModal';
@@ -19,11 +18,9 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { addToCart } = useCartContext();
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
-        addToCart(product, 1);
         setIsModalOpen(true);
     };
 
