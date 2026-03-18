@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCartContext } from '@/components/CartProvider';
+import { Header } from '@/components/Header';
 
 export default function CartPage() {
     const { items, isLoading, removeFromCart, updateQuantity, getTotal, clearCart } = useCartContext();
@@ -30,14 +31,7 @@ export default function CartPage() {
 
     return (
         <div className="min-h-screen bg-white dark:bg-black">
-            {/* Header */}
-            <header className="border-b border-gray-200 dark:border-gray-800">
-                <nav className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-                    <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-white">
-                        NextMarketplace
-                    </Link>
-                </nav>
-            </header>
+            <Header />
 
             {/* Breadcrumb */}
             <nav className="border-b border-gray-200 dark:border-gray-800">

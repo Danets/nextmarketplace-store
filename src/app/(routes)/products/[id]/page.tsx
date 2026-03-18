@@ -4,6 +4,7 @@ import { use, useState } from 'react';
 import Link from 'next/link';
 import { getProductById, products } from '@/lib/data/products';
 import { useCartContext } from '@/components/CartProvider';
+import { Header } from '@/components/Header';
 import { notFound } from 'next/navigation';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -41,19 +42,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
     return (
         <div className="min-h-screen bg-white dark:bg-black">
-            {/* Header */}
-            <header className="border-b border-gray-200 dark:border-gray-800">
-                <nav className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-                    <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-white">
-                        NextMarketplace
-                    </Link>
-                    <div className="flex items-center gap-4">
-                        <Link href="/cart" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-                            Cart
-                        </Link>
-                    </div>
-                </nav>
-            </header>
+            <Header />
 
             {/* Breadcrumb */}
             <nav className="border-b border-gray-200 dark:border-gray-800">

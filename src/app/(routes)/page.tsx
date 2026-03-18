@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ProductCard } from '@/components/ProductCard';
 import { CategoryCard } from '@/components/CategoryCard';
+import { Header } from '@/components/Header';
 import { getFeaturedProducts, categories } from '@/lib/data/products';
 
 export default function HomePage() {
@@ -8,19 +9,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black">
-      {/* Header */}
-      <header className="border-b border-gray-200 dark:border-gray-800">
-        <nav className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-white">
-            NextMarketplace
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/cart" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-              Cart
-            </Link>
-          </div>
-        </nav>
-      </header>
+      <Header />
 
       <main className="mx-auto max-w-7xl px-6 py-12">
         {/* Hero Section */}
