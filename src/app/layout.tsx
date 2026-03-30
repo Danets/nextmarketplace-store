@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
+// import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const font = Urbanist({
   variable: "--font",
@@ -24,7 +26,9 @@ export default function RootLayout({
         className={font.variable}
       >
         <CartProvider>
+          {/* <Header /> */}
           {children}
+          <Footer />
         </CartProvider>
       </body>
     </html>
