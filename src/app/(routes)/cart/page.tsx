@@ -11,14 +11,7 @@ export default function CartPage() {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-white dark:bg-black">
-                {/* Header */}
-                <header className="border-b border-gray-200 dark:border-gray-800">
-                    <nav className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-                        <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-white">
-                            NextMarketplace
-                        </Link>
-                    </nav>
-                </header>
+                <Header />
 
                 <main className="mx-auto max-w-7xl px-6 py-8">
                     <div className="text-center py-12">
