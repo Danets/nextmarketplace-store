@@ -30,7 +30,7 @@ export function PriceDisplay({
     return (
         <div className="flex items-center gap-2">
             <span className={`font-bold text-gray-900 dark:text-white ${sizeClasses[size]}`}>
-                ${displayPrice.toFixed(2)}
+                ${price.toFixed(2)}
             </span>
             {(originalPrice || discount) && (
                 <span className={`line-through text-gray-500 dark:text-gray-400 ${size === 'sm' ? 'text-xs' : 'text-sm'}`}>
